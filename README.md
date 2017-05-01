@@ -1,6 +1,6 @@
 # Couchbase Anypoint Connector
 
-[Connector description including destination service or application with]
+This connector allows mule to connect to [Couchbase](https://www.couchbase.com/) NoSQL database and perform CRUD operations on Couchbase database.
 
 # Mule supported versions
 Examples:
@@ -8,16 +8,10 @@ Mule 3.4.x, 3.5.x
 Mule 3.4.1
 
 # [Destination service or application name] supported versions
-Example:
-Oracle E-Business Suite 12.1 and above.
+[Couchbase Server 3+](https://www.couchbase.com/downloads).
 
 #Service or application supported modules
-Example:
-Oracle CRM
-Oracle Financials
-or 
-Salesforce API v.24
-Salesforce Metadata API
+Couchbase Key-Value Service
 
 
 # Installation 
