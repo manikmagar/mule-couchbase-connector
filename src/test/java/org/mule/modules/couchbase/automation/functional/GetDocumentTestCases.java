@@ -1,36 +1,103 @@
 package org.mule.modules.couchbase.automation.functional;
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mule.modules.couchbase.CouchbaseConnector;
-import org.mule.tools.devkit.ctf.junit.AbstractTestCase;
+import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
+import org.mule.modules.couchbase.model.CbMapDocument;
 
-public class GetDocumentTestCases extends AbstractTestCase<CouchbaseConnector> {
+import com.couchbase.client.java.error.CASMismatchException;
 
-	public GetDocumentTestCases() {
-		super(CouchbaseConnector.class);
-	}
+public class GetDocumentTestCases extends CouchbaseAbstractTestCase {
 
-	@Before
-	public void setup() {
-		// TODO
-	}
-
-	@After
-	public void tearDown() {
-		// TODO
-	}
 
 	@Test
-	public void verify() {
-		java.util.Map<java.lang.String, java.lang.Object> expected = null;
+	public void verifyNoDocumentReturn() {
 		org.mule.api.MuleEvent muleEvent = null;
-		java.lang.String id = null;
-		boolean refreshExpirationTime;
-		int refreshTime;
-		//assertEquals(getConnector().getDocument(muleEvent, id, refreshExpirationTime, refreshTime), expected);
+		java.lang.String id = "1";
+		boolean lockDocument = false;
+		int lockDuration = 0;
+		boolean refreshExpirationTime = false;
+		int refreshTime = 60;
+		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+				refreshTime);
+		MatcherAssert.assertThat(returnDoc, Matchers.nullValue());
+		
+	}
+	
+	@Test
+	public void verifyDocumentReturn() {
+		org.mule.api.MuleEvent muleEvent = null;
+		java.lang.String id = "user1";
+		boolean lockDocument = false;
+		int lockDuration = 0;
+		boolean refreshExpirationTime = false;
+		int refreshTime = 60;
+		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+				refreshTime);
+		MatcherAssert.assertThat(returnDoc, Matchers.notNullValue());
+		MatcherAssert.assertThat(returnDoc.getCas(), Matchers.notNullValue());
+		MatcherAssert.assertThat(returnDoc.getId(), Matchers.equalTo("user1"));
+		MatcherAssert.assertThat(returnDoc.getContent().get("state").toString(), Matchers.equalTo("DE"));
+		
+	}
+	
+	/**
+	 * Tests the Pessimistic locking of a document. Locked document can only be updated if CAS matches with the value stored in server.
+	 * Incorrect CAS value in update should result in exception.
+	 */
+	@Test
+	public void verifyDocumentLockException() {
+		org.mule.api.MuleEvent muleEvent = null;
+		java.lang.String id = "user1";
+		boolean lockDocument = true;
+		int lockDuration = 15;
+		boolean refreshExpirationTime = false;
+		int refreshTime = 60;
+		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+				refreshTime);
+		
+		//Change the CAS and update the object. It should throw an exception.
+		
+		CbMapDocument newDoc = returnDoc.clone();
+		
+		newDoc.setCas(1l);
+		newDoc.getContent().put("city", "anything");
+		
+		boolean asExpected = false;
+		
+		try {
+
+			getConnector().updateDocument(muleEvent, newDoc);
+			
+		} catch (CASMismatchException e) {
+			asExpected = true;
+			getConnector().unlockDocument(muleEvent, returnDoc);
+		}
+
+		MatcherAssert.assertThat(asExpected, Matchers.equalTo(Boolean.TRUE));
+	}
+	
+	/**
+	 * Tests the Pessimistic locking of a document. Locked document can only be updated if CAS matches with the value stored in server.
+	 * Incorrect CAS value in update should result in exception.
+	 */
+	@Test
+	public void verifyDocumentLockNoException() {
+		org.mule.api.MuleEvent muleEvent = null;
+		java.lang.String id = "user1";
+		boolean lockDocument = true;
+		int lockDuration = 15;
+		boolean refreshExpirationTime = false;
+		int refreshTime = 60;
+		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+				refreshTime);
+		//Change an attribute, keeping CAS same.
+		returnDoc.getContent().put("city", "anything");
+	
+		CbMapDocument returnDoc2 = getConnector().updateDocument(muleEvent, returnDoc);
+			
+		MatcherAssert.assertThat(returnDoc2.getContent().get("city").toString(), Matchers.equalTo("anything"));
 	}
 
 }

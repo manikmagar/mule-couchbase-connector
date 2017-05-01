@@ -10,20 +10,22 @@ import org.slf4j.LoggerFactory;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.env.CouchbaseEnvironment;
+import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 
-public class CouchbaseConnectionUtil {
+public class CouchbaseClusterClient {
 	
-	private Logger LOG = LoggerFactory.getLogger(CouchbaseConnectionUtil.class);
+	private Logger LOG = LoggerFactory.getLogger(CouchbaseClusterClient.class);
 	
 	private static final class SingleConnectionHolder {
-		public static final CouchbaseConnectionUtil INSTANCE = new CouchbaseConnectionUtil();
+		public static final CouchbaseClusterClient INSTANCE = new CouchbaseClusterClient();
 	}
 	
-	private CouchbaseConnectionUtil(){
+	private CouchbaseClusterClient(){
 		
 	}
 	
-	public static CouchbaseConnectionUtil get(){
+	public static CouchbaseClusterClient get(){
 		return SingleConnectionHolder.INSTANCE;
 	}
 	
@@ -31,15 +33,22 @@ public class CouchbaseConnectionUtil {
 	
 	private Map<String, Bucket> couchbaseBuckets = new HashMap<String, Bucket>();
 	
-	public  Cluster createCluster(final String clusterSeedNodes){
-		if(couchbaseCluster == null) {
-			synchronized (SingleConnectionHolder.INSTANCE){
-				if(couchbaseCluster == null) {
-					LOG.debug("Instantiating new Couchbase Cluster");
-					couchbaseCluster = CouchbaseCluster.create(clusterSeedNodes);
-				}
-			}
-		}
+	public  Cluster createCluster(final String clusterSeedNodes, final CouchbaseConnectorConfig config){
+//		if(couchbaseCluster == null) {
+//			synchronized (SingleConnectionHolder.INSTANCE){
+//				if(couchbaseCluster == null) {
+//					LOG.debug("Instantiating new Couchbase Cluster");
+
+	        		CouchbaseEnvironment env = DefaultCouchbaseEnvironment
+	        				.builder()
+	        				.bootstrapHttpDirectPort(config.getBootstrapHttpDirectPort())
+	        				.bootstrapCarrierDirectPort(config.getBootstrapCarrierDirectPort())
+	        				.build();
+	        		
+					couchbaseCluster = CouchbaseCluster.create(env,clusterSeedNodes);
+//				}
+//			}
+//		}
 		
 		return couchbaseCluster;
 	}

@@ -1,5 +1,7 @@
 package org.mule.modules.couchbase.config;
 
+import javax.validation.constraints.NotNull;
+
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.annotations.Configurable;
@@ -9,6 +11,7 @@ import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.TestConnectivity;
 import org.mule.api.annotations.ValidateConnection;
 import org.mule.api.annotations.components.ConnectionManagement;
+import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.display.Password;
 import org.mule.api.annotations.param.ConnectionKey;
 import org.mule.api.annotations.param.Default;
@@ -16,7 +19,7 @@ import org.mule.util.StringUtils;
 
 import com.couchbase.client.java.Bucket;
 
-@ConnectionManagement(friendlyName = "Configuration")
+@ConnectionManagement(friendlyName = "Configuration", configElementName="couchbase-config")
 public class CouchbaseConnectorConfig {
     
 	@Configurable
@@ -27,6 +30,18 @@ public class CouchbaseConnectorConfig {
 	@Password
 	@Default("")
 	private String password;
+	
+	@Configurable
+	@Default("8091")
+	@NotNull
+	@FriendlyName("HTTP Non-Encrypted Port")
+	private int bootstrapHttpDirectPort;
+	
+	@Configurable
+	@Default("11210")
+	@NotNull
+	@FriendlyName("Carrier Non-Encrypted Port")
+	private int bootstrapCarrierDirectPort;
 	
     public String getBucketName() {
 		return bucketName;
@@ -40,14 +55,30 @@ public class CouchbaseConnectorConfig {
 		return password;
 	}
 
+	public int getBootstrapHttpDirectPort() {
+		return bootstrapHttpDirectPort;
+	}
+
+	public void setBootstrapHttpDirectPort(int bootstrapHttpDirectPort) {
+		this.bootstrapHttpDirectPort = bootstrapHttpDirectPort;
+	}
+
+	public int getBootstrapCarrierDirectPort() {
+		return bootstrapCarrierDirectPort;
+	}
+
+	public void setBootstrapCarrierDirectPort(int bootstrapCarrierDirectPort) {
+		this.bootstrapCarrierDirectPort = bootstrapCarrierDirectPort;
+	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	private CouchbaseConnectionUtil couchbaseConnection = CouchbaseConnectionUtil.get();
+	private CouchbaseClusterClient cbClusterClient = CouchbaseClusterClient.get();
 	
 	public Bucket openBucket(){
-		return couchbaseConnection.openBucket(getBucketName(), getPassword());
+		return cbClusterClient.openBucket(getBucketName(), getPassword());
 	}
 	
 	@Connect
@@ -56,9 +87,9 @@ public class CouchbaseConnectorConfig {
         throws ConnectionException {
 		
         try {
-        	couchbaseConnection.createCluster(clusterSeedNodes);
+        	cbClusterClient.createCluster(clusterSeedNodes, this);
         	if(!StringUtils.isEmpty(getBucketName())){
-        		couchbaseConnection.openBucket(getBucketName(), getPassword());
+        		cbClusterClient.openBucket(getBucketName(), getPassword());
         	}
 		} catch (Exception e) {
 			throw new ConnectionException(ConnectionExceptionCode.CANNOT_REACH,"","Unable to connect to couchbase cluster or open specified bucket");
@@ -70,7 +101,7 @@ public class CouchbaseConnectorConfig {
      */
     @Disconnect
     public void disconnect() {
-    	couchbaseConnection.disconnectCluster();
+    	cbClusterClient.disconnectCluster();
     }
 
     /**
@@ -78,7 +109,7 @@ public class CouchbaseConnectorConfig {
      */
     @ValidateConnection
     public boolean isConnected() {
-       return couchbaseConnection.isConnected();
+       return cbClusterClient.isConnected();
     }
 
     /**

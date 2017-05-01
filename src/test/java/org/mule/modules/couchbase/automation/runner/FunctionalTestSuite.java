@@ -2,14 +2,20 @@ package org.mule.modules.couchbase.automation.runner;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 import org.mule.modules.couchbase.CouchbaseConnector;
+import org.mule.modules.couchbase.automation.functional.GetDocumentTestCases;
+import org.mule.modules.couchbase.automation.functional.UpdateDocumentTestCases;
 import org.mule.tools.devkit.ctf.mockup.ConnectorTestContext;
 
-//@RunWith(Suite.class)
-//@SuiteClasses({
-//
-//GreetTestCases.class
-//})
+@RunWith(Suite.class)
+@SuiteClasses({
+
+GetDocumentTestCases.class,
+UpdateDocumentTestCases.class
+})
 
 public class FunctionalTestSuite {
 	
@@ -23,4 +29,5 @@ public class FunctionalTestSuite {
     	ConnectorTestContext.shutDown();
     }
 	
+
 }
