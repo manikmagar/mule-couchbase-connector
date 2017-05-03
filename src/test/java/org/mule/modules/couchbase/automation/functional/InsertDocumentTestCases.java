@@ -1,35 +1,49 @@
 package org.mule.modules.couchbase.automation.functional;
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
-import org.mule.modules.couchbase.CouchbaseConnector;
+import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
 import org.mule.modules.couchbase.model.CbMapDocument;
-import org.mule.tools.devkit.ctf.junit.AbstractTestCase;
 
-public class InsertDocumentTestCases extends AbstractTestCase<CouchbaseConnector> {
+import com.couchbase.client.java.error.DocumentAlreadyExistsException;
 
-	public InsertDocumentTestCases() {
-		super(CouchbaseConnector.class);
-	}
+public class InsertDocumentTestCases extends CouchbaseAbstractTestCase {
 
-	@Before
-	public void setup() {
-		// TODO
-	}
-
-	@After
-	public void tearDown() {
-		// TODO
-	}
-
-	@Test
-	public void verify() {
-		org.mule.modules.couchbase.model.CbMapDocument expected = null;
+	@Test(expected=DocumentAlreadyExistsException.class)
+	public void testExistingDocumentInsertFailure(){
 		org.mule.api.MuleEvent muleEvent = null;
-		org.mule.modules.couchbase.model.CbMapDocument cbMapDocument = new CbMapDocument();
-		assertEquals(getConnector().insertDocument(muleEvent, cbMapDocument), expected);
+		
+		CbMapDocument cbMapDocument = new CbMapDocument();
+		cbMapDocument.setId("user1");
+		
+		Map<String, Object> content = new HashMap<String, Object>();
+		content.put("name","MyName");
+		cbMapDocument.setContent(content);
+		
+		getConnector().insertDocument(muleEvent, cbMapDocument);
+		
+	}
+	
+	@Test
+	public void testDocumentInsert() {
+		org.mule.api.MuleEvent muleEvent = null;
+		
+		CbMapDocument cbMapDocument = new CbMapDocument();
+		cbMapDocument.setId("user6");
+		
+		Map<String, Object> content = new HashMap<String, Object>();
+		content.put("name","MyName");
+		content.put("state","CA");
+		cbMapDocument.setContent(content);
+		
+		CbMapDocument returnDoc = getConnector().insertDocument(muleEvent, cbMapDocument);
+		
+		assertNotNull(returnDoc.getCas());
+		assertEquals(returnDoc.getId(), "user6");
+		assertEquals(returnDoc.getContent().get("name").toString(), "MyName");
+		assertEquals(returnDoc.getContent().get("state").toString(), "CA");
 	}
 
 }

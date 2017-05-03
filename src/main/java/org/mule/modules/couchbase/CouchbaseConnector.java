@@ -9,18 +9,24 @@ import org.mule.api.MuleEvent;
 import org.mule.api.annotations.Config;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
+import org.mule.api.annotations.Required;
 import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.display.Placement;
 import org.mule.api.annotations.display.Summary;
 import org.mule.api.annotations.param.Default;
 import org.mule.modules.couchbase.config.CouchbaseConnectorConfig;
 import org.mule.modules.couchbase.model.CbMapDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.JsonDocument;
+import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
 @Connector(name="couchbasedb", friendlyName="Couchbase DB")
 public class CouchbaseConnector{
+	
+	private Logger LOG = LoggerFactory.getLogger(CouchbaseConnector.class); 
 
     @Config
     CouchbaseConnectorConfig config;
@@ -164,7 +170,7 @@ public class CouchbaseConnector{
    	 * @see com.couchbase.client.java.Bucket#remove(com.couchbase.client.java.document.Document)
    	 */
    	@Processor(friendlyName="Delete A Document")
-   	public CbMapDocument deleteDocument(MuleEvent muleEvent, @Placement(group="Document to Delete") @FriendlyName("Document") @Summary("Specify the document to be deleted.") CbMapDocument cbMapDocument){
+   	public boolean deleteDocument(MuleEvent muleEvent, @Placement(group="Document to Delete") @FriendlyName("Document") @Summary("Specify the document to be deleted.") CbMapDocument cbMapDocument){
    		
    		Bucket bucket = openBucket();
 		
@@ -172,9 +178,15 @@ public class CouchbaseConnector{
 		
 		document = bucket.remove(document);
 		
-		CbMapDocument returnDocument = CbMapDocument.fromJsonDocument(document);
+		try {
+			CbMapDocument.fromJsonDocument(document);
+		} catch (DocumentDoesNotExistException notExists) {
+			LOG.info("Couchbase Delete: Document to delete does not exist: "+ cbMapDocument.getId());
+			return false;
+		}
+		
    		
-   		return returnDocument;
+   		return true;
    		
    	}
    	
@@ -187,15 +199,13 @@ public class CouchbaseConnector{
    	 * @see com.couchbase.client.java.Bucket#unlock(com.couchbase.client.java.document.Document)
    	 */
    	@Processor(friendlyName="Unlock A Document")
-   	public boolean unlockDocument(MuleEvent muleEvent, @Placement(group="Document to be Unlocked") @FriendlyName("Document") @Summary("Specify the document to be unlocked.") CbMapDocument cbMapDocument){
+   	public boolean unlockDocument(MuleEvent muleEvent, @Placement(group="Document to be Unlocked") @FriendlyName("Document ID") @Summary("Specify the document Id to be unlocked.") String id,
+   			@Placement(group="Document to be Unlocked") @FriendlyName("Document CAS") @Summary("Document CAS must match with the one stored in database.") Long cas){
    		
    		Bucket bucket = openBucket();
-		
-		JsonDocument document = cbMapDocument.toJsonDocument();
-		
-		boolean unlocked = bucket.unlock(document);
-		
    		
+   		boolean unlocked = bucket.unlock(id, cas);
+		
    		return unlocked;
    		
    	}

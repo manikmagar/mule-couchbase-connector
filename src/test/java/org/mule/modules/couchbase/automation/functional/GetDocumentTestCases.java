@@ -72,7 +72,7 @@ public class GetDocumentTestCases extends CouchbaseAbstractTestCase {
 			
 		} catch (CASMismatchException e) {
 			asExpected = true;
-			getConnector().unlockDocument(muleEvent, returnDoc);
+			getConnector().unlockDocument(muleEvent, returnDoc.getId(), returnDoc.getCas());
 		}
 
 		MatcherAssert.assertThat(asExpected, Matchers.equalTo(Boolean.TRUE));

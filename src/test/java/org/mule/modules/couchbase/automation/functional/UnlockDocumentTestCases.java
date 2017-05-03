@@ -1,34 +1,30 @@
 package org.mule.modules.couchbase.automation.functional;
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.mule.modules.couchbase.CouchbaseConnector;
-import org.mule.tools.devkit.ctf.junit.AbstractTestCase;
+import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
+import org.mule.modules.couchbase.model.CbMapDocument;
 
-public class UnlockDocumentTestCases extends AbstractTestCase<CouchbaseConnector> {
+import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
-	public UnlockDocumentTestCases() {
-		super(CouchbaseConnector.class);
+public class UnlockDocumentTestCases extends CouchbaseAbstractTestCase {
+
+	@Test(expected=DocumentDoesNotExistException.class)
+	public void testNonExistantDocumentUnlock(){
+		
+		Boolean result = getConnector().unlockDocument(null, "user8", 0l);
+		
+		assertEquals(result, Boolean.FALSE);
+		
 	}
-
-	@Before
-	public void setup() {
-		// TODO
-	}
-
-	@After
-	public void tearDown() {
-		// TODO
-	}
-
+	
 	@Test
-	public void verify() {
-		boolean expected = true;
-		org.mule.api.MuleEvent muleEvent = null;
-		org.mule.modules.couchbase.model.CbMapDocument cbMapDocument = null;
-		assertEquals(getConnector().unlockDocument(muleEvent, cbMapDocument), expected);
+	public void testDocumentUnlock(){
+		
+		CbMapDocument inputDoc = getConnector().getDocument(null, "user1", true, 15, false, 0);
+		
+		Boolean result = getConnector().unlockDocument(null, inputDoc.getId(), inputDoc.getCas());
+		
+		assertEquals(result, Boolean.TRUE);
+		
 	}
-
 }

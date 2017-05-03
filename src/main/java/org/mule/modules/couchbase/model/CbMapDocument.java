@@ -49,6 +49,21 @@ public class CbMapDocument implements Cloneable {
 	@Placement(group="Document Content",order=1)
 	private Map<String, Object> content;
 	
+	
+	public CbMapDocument(){
+		
+	}
+	
+	public CbMapDocument(String id){
+		this(id, null);
+	}
+	
+	public CbMapDocument(String id, Map<String, Object> content){
+		setId(id);
+		setContent(content);
+	}
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -84,7 +99,10 @@ public class CbMapDocument implements Cloneable {
 		cbMapDocument.setCas(jsonDocument.cas());
 		cbMapDocument.setExpiry(jsonDocument.expiry());
 		cbMapDocument.setId(jsonDocument.id());
-		cbMapDocument.setContent(jsonDocument.content().toMap());
+		if(jsonDocument.content() != null) {
+			cbMapDocument.setContent(jsonDocument.content().toMap());
+		}
+		
 		return cbMapDocument;
 	}
 	
@@ -112,6 +130,7 @@ public class CbMapDocument implements Cloneable {
 		return "Id: " + this.id + ", CAS: "+ this.cas + ", Expiry: " + this.expiry + ", Content: " + this.content.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public CbMapDocument clone() {
 		CbMapDocument newDoc = new CbMapDocument();
@@ -120,6 +139,14 @@ public class CbMapDocument implements Cloneable {
 		newDoc.setExpiry(getExpiry());
 		newDoc.setContent((Map<String, Object>) ((HashMap<String, Object>)getContent()).clone());
 		return newDoc;
+	}
+
+	/**
+	 * Checks if Content is null or empty.
+	 * @return
+	 */
+	public boolean hasContent(){
+		return content == null || content.isEmpty();
 	}
 	
 }
