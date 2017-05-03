@@ -1,16 +1,15 @@
-# Couchbase Anypoint Connector
+# Mule Anypoint Connector for Couchbase Database
 
-This connector allows mule to connect to [Couchbase](https://www.couchbase.com/) NoSQL database and perform CRUD operations on Couchbase database.
+This connector allows Mule ESB to connect to [Couchbase](https://www.couchbase.com/) NoSQL database and perform CRUD operations on Couchbase database.
 
 [![CircleCI](https://circleci.com/gh/manikmagar/couchbase-connector/tree/dev.svg?style=svg)](https://circleci.com/gh/manikmagar/couchbase-connector/tree/dev)
 
 # Mule supported versions
-Examples:
 Mule 3.4.x, 3.5.x
 Mule 3.4.1
 
 
-# [Destination service or application name] supported versions
+# Couchbase supported versions
 [Couchbase Server 3+](https://www.couchbase.com/downloads).
 
 #Service or application supported modules
@@ -24,7 +23,7 @@ For released connectors you can download them from the update site in Anypoint S
 Open Anypoint Studio, go to Help → Install New Software and select Anypoint Connectors Update Site where you’ll find all avaliable connectors.
 
 #Usage
-For information about usage our documentation at http://github.com/mulesoft/couchbase.
+For information about usage our documentation at http://github.com/manikmagar/couchbase-connector.
 
 # Reporting Issues
 
