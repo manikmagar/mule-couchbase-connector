@@ -9,7 +9,6 @@ import org.mule.api.MuleEvent;
 import org.mule.api.annotations.Config;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
-import org.mule.api.annotations.Required;
 import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.display.Placement;
 import org.mule.api.annotations.display.Summary;
@@ -63,7 +62,9 @@ public class CouchbaseConnector{
      * @param refreshExpirationTime
      * @param refreshTime
      * @return {@link CbMapDocument} containing document id, cas, expiry and content from database.
-     * @see {@link Bucket#get(com.couchbase.client.java.document.Document)}, {@link Bucket#getAndLock(com.couchbase.client.java.document.Document, int)}, {@link Bucket#getAndTouch(com.couchbase.client.java.document.Document)}
+     * @see Bucket#get(com.couchbase.client.java.document.Document)
+     * @see Bucket#getAndLock(com.couchbase.client.java.document.Document, int)
+     * @see Bucket#getAndTouch(com.couchbase.client.java.document.Document)
      */
     @Processor(friendlyName="Get A Document")
     public CbMapDocument getDocument(MuleEvent muleEvent, String id, 
@@ -194,7 +195,8 @@ public class CouchbaseConnector{
    	 * This method unlocks the document that was previously locked (pessimistic). Document can be unlocked by providing either document ID and CAS OR whole document. Document can be retrieved with get document method. 
    	 * 
    	 * @param muleEvent
-   	 * @param cbMapDocument {@link CbMapDocument} containing document id and content to be unlocked from database.
+   	 * @param id Unique Id of the document
+   	 * @param cas Long CAS value that must match with the one stored in database.
    	 * @return {@link Boolean} if document is successfully unlocked
    	 * @see com.couchbase.client.java.Bucket#unlock(com.couchbase.client.java.document.Document)
    	 */
