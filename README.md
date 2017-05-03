@@ -2,10 +2,13 @@
 
 This connector allows mule to connect to [Couchbase](https://www.couchbase.com/) NoSQL database and perform CRUD operations on Couchbase database.
 
+[![CircleCI](https://circleci.com/gh/manikmagar/couchbase-connector/tree/dev.svg?style=svg)](https://circleci.com/gh/manikmagar/couchbase-connector/tree/dev)
+
 # Mule supported versions
 Examples:
 Mule 3.4.x, 3.5.x
 Mule 3.4.1
+
 
 # [Destination service or application name] supported versions
 [Couchbase Server 3+](https://www.couchbase.com/downloads).
