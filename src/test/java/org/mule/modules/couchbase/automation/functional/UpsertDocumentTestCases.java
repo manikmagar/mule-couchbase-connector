@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
-import org.mule.modules.couchbase.model.CbMapDocument;
+import org.mule.modules.couchbase.model.JavaMapDocument;
 
 public class UpsertDocumentTestCases extends CouchbaseAbstractTestCase {
 
@@ -13,15 +13,15 @@ public class UpsertDocumentTestCases extends CouchbaseAbstractTestCase {
 	public void testNonExistantDocumentInsert() {
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("user6");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("user6");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","MyName");
 		content.put("state","CA");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		CbMapDocument returnDoc = getConnector().upsertDocument(muleEvent, cbMapDocument);
+		JavaMapDocument returnDoc = getConnector().upsertDocument(muleEvent, javaMapDocument);
 		
 		assertNotNull(returnDoc.getCas());
 		assertEquals(returnDoc.getId(), "user6");
@@ -33,14 +33,14 @@ public class UpsertDocumentTestCases extends CouchbaseAbstractTestCase {
 	public void testExistingDocumentUpdate() {
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("user1");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("user1");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","MyName");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		CbMapDocument returnDoc = getConnector().upsertDocument(muleEvent, cbMapDocument);
+		JavaMapDocument returnDoc = getConnector().upsertDocument(muleEvent, javaMapDocument);
 		
 		assertNotNull(returnDoc.getCas());
 		//Loaded document has state but when we replace, it should not be there

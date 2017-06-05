@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mule.modules</groupId>
 	<artifactId>couchbase-connector</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>mule-module</packaging>
 	<name>Mule Couchbase Anypoint Connector</name>
 
@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>com.couchbase.client</groupId>
 			<artifactId>java-client</artifactId>
-			<version>2.4.4</version>
+			<version>2.4.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.couchbase.mock</groupId>

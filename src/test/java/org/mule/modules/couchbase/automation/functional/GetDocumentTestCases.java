@@ -4,7 +4,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
-import org.mule.modules.couchbase.model.CbMapDocument;
+import org.mule.modules.couchbase.model.JavaMapDocument;
 
 import com.couchbase.client.java.error.CASMismatchException;
 
@@ -19,7 +19,7 @@ public class GetDocumentTestCases extends CouchbaseAbstractTestCase {
 		int lockDuration = 0;
 		boolean refreshExpirationTime = false;
 		int refreshTime = 60;
-		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+		JavaMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
 				refreshTime);
 		MatcherAssert.assertThat(returnDoc, Matchers.nullValue());
 		
@@ -33,7 +33,7 @@ public class GetDocumentTestCases extends CouchbaseAbstractTestCase {
 		int lockDuration = 0;
 		boolean refreshExpirationTime = false;
 		int refreshTime = 60;
-		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+		JavaMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
 				refreshTime);
 		MatcherAssert.assertThat(returnDoc, Matchers.notNullValue());
 		MatcherAssert.assertThat(returnDoc.getCas(), Matchers.notNullValue());
@@ -54,12 +54,12 @@ public class GetDocumentTestCases extends CouchbaseAbstractTestCase {
 		int lockDuration = 15;
 		boolean refreshExpirationTime = false;
 		int refreshTime = 60;
-		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+		JavaMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
 				refreshTime);
 		
 		//Change the CAS and update the object. It should throw an exception.
 		
-		CbMapDocument newDoc = returnDoc.clone();
+		JavaMapDocument newDoc = returnDoc.clone();
 		
 		newDoc.setCas(1l);
 		newDoc.getContent().put("city", "anything");
@@ -90,12 +90,12 @@ public class GetDocumentTestCases extends CouchbaseAbstractTestCase {
 		int lockDuration = 15;
 		boolean refreshExpirationTime = false;
 		int refreshTime = 60;
-		CbMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
+		JavaMapDocument returnDoc = getConnector().getDocument(muleEvent, id, lockDocument, lockDuration, refreshExpirationTime,
 				refreshTime);
 		//Change an attribute, keeping CAS same.
 		returnDoc.getContent().put("city", "anything");
 	
-		CbMapDocument returnDoc2 = getConnector().updateDocument(muleEvent, returnDoc);
+		JavaMapDocument returnDoc2 = getConnector().updateDocument(muleEvent, returnDoc);
 			
 		MatcherAssert.assertThat(returnDoc2.getContent().get("city").toString(), Matchers.equalTo("anything"));
 	}

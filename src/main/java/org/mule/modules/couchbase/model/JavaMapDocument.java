@@ -16,7 +16,7 @@ import com.couchbase.client.java.document.json.JsonObject;
  * @author manik
  *
  */
-public class CbMapDocument implements Cloneable {
+public class JavaMapDocument implements Cloneable {
 	/**
 	 * Unique document identifier
 	 */
@@ -50,15 +50,15 @@ public class CbMapDocument implements Cloneable {
 	private Map<String, Object> content;
 	
 	
-	public CbMapDocument(){
+	public JavaMapDocument(){
 		
 	}
 	
-	public CbMapDocument(String id){
+	public JavaMapDocument(String id){
 		this(id, null);
 	}
 	
-	public CbMapDocument(String id, Map<String, Object> content){
+	public JavaMapDocument(String id, Map<String, Object> content){
 		setId(id);
 		setContent(content);
 	}
@@ -90,24 +90,24 @@ public class CbMapDocument implements Cloneable {
 	}
 	
 	/**
-	 * Creates an instance of {@link CbMapDocument} from {@link JsonDocument}.
+	 * Creates an instance of {@link JavaMapDocument} from {@link JsonDocument}.
 	 * @param jsonDocument
-	 * @return {@link CbMapDocument}
+	 * @return {@link JavaMapDocument}
 	 */
-	public static CbMapDocument fromJsonDocument(JsonDocument jsonDocument){
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setCas(jsonDocument.cas());
-		cbMapDocument.setExpiry(jsonDocument.expiry());
-		cbMapDocument.setId(jsonDocument.id());
+	public static JavaMapDocument fromJsonDocument(JsonDocument jsonDocument){
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setCas(jsonDocument.cas());
+		javaMapDocument.setExpiry(jsonDocument.expiry());
+		javaMapDocument.setId(jsonDocument.id());
 		if(jsonDocument.content() != null) {
-			cbMapDocument.setContent(jsonDocument.content().toMap());
+			javaMapDocument.setContent(jsonDocument.content().toMap());
 		}
 		
-		return cbMapDocument;
+		return javaMapDocument;
 	}
 	
 	/**
-	 * Creates {@link JsonDocument} from this {@link CbMapDocument}. 
+	 * Creates {@link JsonDocument} from this {@link JavaMapDocument}. 
 	 * @return {@link JsonDocument}
 	 */
 	public JsonDocument toJsonDocument(){
@@ -132,8 +132,8 @@ public class CbMapDocument implements Cloneable {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public CbMapDocument clone() {
-		CbMapDocument newDoc = new CbMapDocument();
+	public JavaMapDocument clone() {
+		JavaMapDocument newDoc = new JavaMapDocument();
 		newDoc.setId(this.getId());
 		newDoc.setCas(this.getCas());
 		newDoc.setExpiry(getExpiry());

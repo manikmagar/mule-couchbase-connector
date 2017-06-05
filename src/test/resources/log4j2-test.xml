@@ -21,7 +21,7 @@
            <AppenderRef ref="STDOUT"/>
            
        </Root>
-       <AsyncRoot level="DEBUG">
+       <AsyncRoot level="INFO">
             <AppenderRef ref="file" />
         </AsyncRoot>
    </Loggers>

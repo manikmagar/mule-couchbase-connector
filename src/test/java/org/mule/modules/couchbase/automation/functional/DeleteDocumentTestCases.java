@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
-import org.mule.modules.couchbase.model.CbMapDocument;
+import org.mule.modules.couchbase.model.JavaMapDocument;
 
 import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
@@ -15,14 +15,14 @@ public class DeleteDocumentTestCases extends CouchbaseAbstractTestCase {
 	public void testNonExistingDocumentDeleteFailure(){
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("user6");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("user6");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","MyName");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		boolean result = getConnector().deleteDocument(muleEvent, cbMapDocument);
+		boolean result = getConnector().deleteDocument(muleEvent, javaMapDocument);
 		assertEquals(result, Boolean.FALSE);
 	}
 	
@@ -30,14 +30,14 @@ public class DeleteDocumentTestCases extends CouchbaseAbstractTestCase {
 	public void testNonExistingDocumentDelete(){
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("user1");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("user1");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","User1");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		boolean result = getConnector().deleteDocument(muleEvent, cbMapDocument);
+		boolean result = getConnector().deleteDocument(muleEvent, javaMapDocument);
 		assertEquals(result, Boolean.TRUE);
 	}
 

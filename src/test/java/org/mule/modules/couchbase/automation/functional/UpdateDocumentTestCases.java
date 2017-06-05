@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
-import org.mule.modules.couchbase.model.CbMapDocument;
+import org.mule.modules.couchbase.model.JavaMapDocument;
 
 import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
@@ -15,28 +15,28 @@ public class UpdateDocumentTestCases extends CouchbaseAbstractTestCase {
 	public void testNonExistantDocumentException() {
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("non-existant-user");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("non-existant-user");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","non-existant-user");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		getConnector().updateDocument(muleEvent, cbMapDocument);
+		getConnector().updateDocument(muleEvent, javaMapDocument);
 	}
 
 	@Test
 	public void testDocumentUpdate() {
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("user1");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("user1");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","MyName");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		CbMapDocument returnDoc = getConnector().updateDocument(muleEvent, cbMapDocument);
+		JavaMapDocument returnDoc = getConnector().updateDocument(muleEvent, javaMapDocument);
 		
 		assertNotNull(returnDoc.getCas());
 		//Loaded document has state but when we replace, it should not be there

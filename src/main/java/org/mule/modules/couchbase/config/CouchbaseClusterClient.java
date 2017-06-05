@@ -34,21 +34,30 @@ public class CouchbaseClusterClient {
 	private Map<String, Bucket> couchbaseBuckets = new HashMap<String, Bucket>();
 	
 	public  Cluster createCluster(final String clusterSeedNodes, final CouchbaseConnectorConfig config){
-//		if(couchbaseCluster == null) {
-//			synchronized (SingleConnectionHolder.INSTANCE){
-//				if(couchbaseCluster == null) {
-//					LOG.debug("Instantiating new Couchbase Cluster");
+		if(couchbaseCluster == null) {
+			synchronized (SingleConnectionHolder.INSTANCE){
+				if(couchbaseCluster == null) {
+					LOG.debug("Instantiating new Couchbase Cluster");
 
 	        		CouchbaseEnvironment env = DefaultCouchbaseEnvironment
 	        				.builder()
 	        				.bootstrapHttpDirectPort(config.getBootstrapHttpDirectPort())
 	        				.bootstrapCarrierDirectPort(config.getBootstrapCarrierDirectPort())
+	        				.bootstrapCarrierSslPort(config.getBootstrapCarrierSslPort())
+	        				.bootstrapCarrierEnabled(config.isBootstrapCarrierEnabled())
+	        				.bootstrapHttpEnabled(config.isBootstrapHttpEnabled())
+	        				.bootstrapHttpSslPort(config.getBootstrapHttpSslPort())
+	        				.sslEnabled(config.isSslEnabled())
+	        				.sslKeystoreFile(config.getSslKeystoreFile())
+	        				.sslKeystorePassword(config.getSslKeystorePassword())
 	        				.build();
 	        		
 					couchbaseCluster = CouchbaseCluster.create(env,clusterSeedNodes);
-//				}
-//			}
-//		}
+				}
+			}
+		} else {
+			LOG.debug("Using Existing Cluster");
+		}
 		
 		return couchbaseCluster;
 	}
@@ -71,16 +80,6 @@ public class CouchbaseClusterClient {
 	public  void disconnectCluster(){
 		synchronized (couchbaseCluster){
 			if (couchbaseCluster != null){
-//				// Disconnect all open buckets
-//				if(!couchbaseBuckets.isEmpty()){
-//					for (String bucketName : couchbaseBuckets.keySet()) {
-//						LOG.info("Closing Bucket ?", bucketName);
-//						couchbaseBuckets.get(bucketName).close();
-//					}
-//				}
-//				
-				//Disconnect the cluster
-				//This also internally closes all open buckets from this cluster
 				couchbaseCluster.disconnect();
 				couchbaseCluster = null;
 				LOG.info("Disconnected from couchbase cluster");

@@ -2,7 +2,7 @@ package org.mule.modules.couchbase.automation.functional;
 
 import org.junit.Test;
 import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
-import org.mule.modules.couchbase.model.CbMapDocument;
+import org.mule.modules.couchbase.model.JavaMapDocument;
 
 import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
@@ -20,7 +20,7 @@ public class UnlockDocumentTestCases extends CouchbaseAbstractTestCase {
 	@Test
 	public void testDocumentUnlock(){
 		
-		CbMapDocument inputDoc = getConnector().getDocument(null, "user1", true, 15, false, 0);
+		JavaMapDocument inputDoc = getConnector().getDocument(null, "user1", true, 15, false, 0);
 		
 		Boolean result = getConnector().unlockDocument(null, inputDoc.getId(), inputDoc.getCas());
 		

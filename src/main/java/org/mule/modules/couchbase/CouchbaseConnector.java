@@ -14,7 +14,7 @@ import org.mule.api.annotations.display.Placement;
 import org.mule.api.annotations.display.Summary;
 import org.mule.api.annotations.param.Default;
 import org.mule.modules.couchbase.config.CouchbaseConnectorConfig;
-import org.mule.modules.couchbase.model.CbMapDocument;
+import org.mule.modules.couchbase.model.JavaMapDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,9 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
-@Connector(name="couchbasedb", friendlyName="Couchbase DB")
+@Connector(name="couchbasedb", friendlyName="Couchbase DB",
+			minMuleVersion="3.5.3",keywords="Couchbase, Database",
+			description="Mule Connector for Couchbase NoSQL database")
 public class CouchbaseConnector{
 	
 	private Logger LOG = LoggerFactory.getLogger(CouchbaseConnector.class); 
@@ -61,13 +63,13 @@ public class CouchbaseConnector{
      * @param lockDuration
      * @param refreshExpirationTime
      * @param refreshTime
-     * @return {@link CbMapDocument} containing document id, cas, expiry and content from database.
+     * @return {@link JavaMapDocument} containing document id, cas, expiry and content from database.
      * @see Bucket#get(com.couchbase.client.java.document.Document)
      * @see Bucket#getAndLock(com.couchbase.client.java.document.Document, int)
      * @see Bucket#getAndTouch(com.couchbase.client.java.document.Document)
      */
-    @Processor(friendlyName="Get A Document")
-    public CbMapDocument getDocument(MuleEvent muleEvent, String id, 
+    @Processor(friendlyName="Get Document")
+    public JavaMapDocument getDocument(MuleEvent muleEvent, String id, 
     		@Placement(group="Document Locking (pessimistic)") @Default("false") boolean lockDocument,
     		@Placement(group="Document Locking (pessimistic)") @Max(30) @Min(0) @Summary("Define seconds for which document should be write-locked. This creates pissimistic locking. Read more on couchbase documentation.") @Default("15") int lockDuration,
     		@Placement(group="Refresh Expiration Time") @Default("false") boolean refreshExpirationTime,
@@ -90,7 +92,7 @@ public class CouchbaseConnector{
 		if(document == null){
 			return null;
 		} else {
-			CbMapDocument doc = CbMapDocument.fromJsonDocument(document);
+			JavaMapDocument doc = JavaMapDocument.fromJsonDocument(document);
 			return doc;
 		}
 		
@@ -99,20 +101,20 @@ public class CouchbaseConnector{
    	/**
    	 * This method update/inserts the JSON document for given id into couchbase database.
    	 * @param muleEvent
-   	 * @param cbMapDocument {@link CbMapDocument} containing document id and content to be upserted in database.
-   	 * @return {@link CbMapDocument} containing document id, cas, expiry and content from database.
+   	 * @param javaMapDocument {@link JavaMapDocument} containing document id and content to be upserted in database.
+   	 * @return {@link JavaMapDocument} containing document id, cas, expiry and content from database.
    	 * @see com.couchbase.client.java.Bucket#upsert(com.couchbase.client.java.document.Document)
    	 */
-   	@Processor(friendlyName="UpSert A Document")
-   	public CbMapDocument upsertDocument(MuleEvent muleEvent, @Placement(group="Document to upsert") @FriendlyName("Document") @Summary("Specify the document to be upserted.") CbMapDocument cbMapDocument){
+   	@Processor(friendlyName="UpSert Document")
+   	public JavaMapDocument upsertDocument(MuleEvent muleEvent, @Placement(group="Document to upsert") @FriendlyName("Document") @Summary("Specify the document to be upserted.") JavaMapDocument javaMapDocument){
    		
    		Bucket bucket = openBucket();
 		
-		JsonDocument document = cbMapDocument.toJsonDocument();
+		JsonDocument document = javaMapDocument.toJsonDocument();
 		
 		document = bucket.upsert(document);
 		
-		CbMapDocument returnDocument = CbMapDocument.fromJsonDocument(document);
+		JavaMapDocument returnDocument = JavaMapDocument.fromJsonDocument(document);
    		
    		return returnDocument;
    	}
@@ -120,20 +122,20 @@ public class CouchbaseConnector{
    	/**
    	 * This method tries to insert the JSON document for given id into couchbase database. It will throw an exception if document with given id already exists in database.
    	 * @param muleEvent
-   	 * @param cbMapDocument {@link CbMapDocument} containing document id and content to be inserted in database.
-   	 * @return {@link CbMapDocument} containing document id, cas, expiry and content from database.
+   	 * @param javaMapDocument {@link JavaMapDocument} containing document id and content to be inserted in database.
+   	 * @return {@link JavaMapDocument} containing document id, cas, expiry and content from database.
    	 * @see com.couchbase.client.java.Bucket#insert(com.couchbase.client.java.document.Document)
    	 */
-   	@Processor(friendlyName="Insert A Document")
-   	public CbMapDocument insertDocument(MuleEvent muleEvent, @Placement(group="Document to Insert") @FriendlyName("Document") @Summary("Specify the document to be inserted.") CbMapDocument cbMapDocument){
+   	@Processor(friendlyName="Insert Document")
+   	public JavaMapDocument insertDocument(MuleEvent muleEvent, @Placement(group="Document to Insert") @FriendlyName("Document") @Summary("Specify the document to be inserted.") JavaMapDocument javaMapDocument){
    		
    		Bucket bucket = openBucket();
 		
-		JsonDocument document = cbMapDocument.toJsonDocument();
+		JsonDocument document = javaMapDocument.toJsonDocument();
 		
 		document = bucket.insert(document);
 		
-		CbMapDocument returnDocument = CbMapDocument.fromJsonDocument(document);
+		JavaMapDocument returnDocument = JavaMapDocument.fromJsonDocument(document);
    		
    		return returnDocument;
    		
@@ -143,46 +145,56 @@ public class CouchbaseConnector{
    	 * This method tries to update an existing JSON document for given id into couchbase database. It will throw an exception if document with given id Does not exist.
    	 * 
    	 * @param muleEvent
-   	 * @param cbMapDocument {@link CbMapDocument} containing document id and content to be updated in database.
-   	 * @return {@link CbMapDocument} containing document id, cas, expiry and content from database.
+   	 * @param javaMapDocument {@link JavaMapDocument} containing document id and content to be updated in database.
+   	 * @return {@link JavaMapDocument} containing document id, cas, expiry and content from database.
    	 * @see com.couchbase.client.java.Bucket#replace(com.couchbase.client.java.document.Document)
    	 */
-   	@Processor(friendlyName="Update A Document")
-   	public CbMapDocument updateDocument(MuleEvent muleEvent, @Placement(group="Document to Update") @FriendlyName("Document") @Summary("Specify the document to be updated.") CbMapDocument cbMapDocument){
+   	@Processor(friendlyName="Update Document")
+   	public JavaMapDocument updateDocument(MuleEvent muleEvent, @Placement(group="Document to Update") @FriendlyName("Document") @Summary("Specify the document to be updated.") JavaMapDocument javaMapDocument){
    		
    		Bucket bucket = openBucket();
 		
-		JsonDocument document = cbMapDocument.toJsonDocument();
+		JsonDocument document = javaMapDocument.toJsonDocument();
+		
+		if(!bucket.exists(document.id())) {
+			throw new DocumentDoesNotExistException("Document with id "+ document.id() +" does not exist.");
+		}
 		
 		document = bucket.replace(document);
 		
-		CbMapDocument returnDocument = CbMapDocument.fromJsonDocument(document);
+		JavaMapDocument returnDocument = JavaMapDocument.fromJsonDocument(document);
    		
    		return returnDocument;
    		
    	}
    	
    	/**
-   	 * This method removes the document with given id from database. Returned {@link CbMapDocument} only contains ID and CAS value set as document is already removed from server.
+   	 * This method removes the document with given id from database. Returned {@link JavaMapDocument} only contains ID and CAS value set as document is already removed from server.
    	 * 
    	 * @param muleEvent
-   	 * @param cbMapDocument {@link CbMapDocument} containing document id and content to be removed from database.
-   	 * @return {@link CbMapDocument} containing document id, cas, expiry and content from database.
+   	 * @param javaMapDocument {@link JavaMapDocument} containing id of the document to be removed from server. Content value is ignored.
+   	 * @return {@link JavaMapDocument} containing document id, cas, expiry and content from database.
    	 * @see com.couchbase.client.java.Bucket#remove(com.couchbase.client.java.document.Document)
    	 */
-   	@Processor(friendlyName="Delete A Document")
-   	public boolean deleteDocument(MuleEvent muleEvent, @Placement(group="Document to Delete") @FriendlyName("Document") @Summary("Specify the document to be deleted.") CbMapDocument cbMapDocument){
+   	@Processor(friendlyName="Delete Document")
+   	public boolean deleteDocument(MuleEvent muleEvent, @Placement(group="Document to Delete") @FriendlyName("Document") @Summary("Specify the document to be deleted.") JavaMapDocument javaMapDocument){
    		
    		Bucket bucket = openBucket();
 		
-		JsonDocument document = cbMapDocument.toJsonDocument();
-		
-		document = bucket.remove(document);
+   		if(!bucket.exists(javaMapDocument.getId())) {
+			LOG.error("Document with id "+ javaMapDocument.getId() +" does not exist.", new DocumentDoesNotExistException("Document with id "+ javaMapDocument.getId() +" does not exist."));
+			return false;
+		}
+   		
+		JsonDocument document = bucket.remove(javaMapDocument.getId());
 		
 		try {
-			CbMapDocument.fromJsonDocument(document);
+			JavaMapDocument.fromJsonDocument(document);
 		} catch (DocumentDoesNotExistException notExists) {
-			LOG.info("Couchbase Delete: Document to delete does not exist: "+ cbMapDocument.getId());
+			LOG.info("Couchbase Delete: Document to delete does not exist: "+ javaMapDocument.getId());
+			return false;
+		}catch (Exception otherEx) {
+			LOG.info("Couchbase Delete: Unable to delete document: "+ javaMapDocument.getId());
 			return false;
 		}
 		
@@ -200,7 +212,7 @@ public class CouchbaseConnector{
    	 * @return {@link Boolean} if document is successfully unlocked
    	 * @see com.couchbase.client.java.Bucket#unlock(com.couchbase.client.java.document.Document)
    	 */
-   	@Processor(friendlyName="Unlock A Document")
+   	@Processor(friendlyName="Unlock Document")
    	public boolean unlockDocument(MuleEvent muleEvent, @Placement(group="Document to be Unlocked") @FriendlyName("Document ID") @Summary("Specify the document Id to be unlocked.") String id,
    			@Placement(group="Document to be Unlocked") @FriendlyName("Document CAS") @Summary("Document CAS must match with the one stored in database.") Long cas){
    		

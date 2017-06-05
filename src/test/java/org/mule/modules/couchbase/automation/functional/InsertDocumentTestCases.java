@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
-import org.mule.modules.couchbase.model.CbMapDocument;
+import org.mule.modules.couchbase.model.JavaMapDocument;
 
 import com.couchbase.client.java.error.DocumentAlreadyExistsException;
 
@@ -15,14 +15,14 @@ public class InsertDocumentTestCases extends CouchbaseAbstractTestCase {
 	public void testExistingDocumentInsertFailure(){
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("user1");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("user1");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","MyName");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		getConnector().insertDocument(muleEvent, cbMapDocument);
+		getConnector().insertDocument(muleEvent, javaMapDocument);
 		
 	}
 	
@@ -30,15 +30,15 @@ public class InsertDocumentTestCases extends CouchbaseAbstractTestCase {
 	public void testDocumentInsert() {
 		org.mule.api.MuleEvent muleEvent = null;
 		
-		CbMapDocument cbMapDocument = new CbMapDocument();
-		cbMapDocument.setId("user6");
+		JavaMapDocument javaMapDocument = new JavaMapDocument();
+		javaMapDocument.setId("user6");
 		
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("name","MyName");
 		content.put("state","CA");
-		cbMapDocument.setContent(content);
+		javaMapDocument.setContent(content);
 		
-		CbMapDocument returnDoc = getConnector().insertDocument(muleEvent, cbMapDocument);
+		JavaMapDocument returnDoc = getConnector().insertDocument(muleEvent, javaMapDocument);
 		
 		assertNotNull(returnDoc.getCas());
 		assertEquals(returnDoc.getId(), "user6");
