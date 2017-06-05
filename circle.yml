@@ -6,3 +6,5 @@ dependencies:
 test:
   override:
     - mvn test -Dtest=FunctionalTestSuite
+  post:
+    - bash <(curl -s https://codecov.io/bash)
