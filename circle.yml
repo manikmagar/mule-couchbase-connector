@@ -8,6 +8,3 @@ dependencies:
 test:
   override:
     - mvn -o test -Dtest=FunctionalTestSuite
-    - mvn cobertura:cobertura
-  post:
-    - bash <(curl -s https://codecov.io/bash)
