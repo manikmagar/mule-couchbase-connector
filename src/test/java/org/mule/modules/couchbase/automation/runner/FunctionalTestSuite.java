@@ -46,14 +46,14 @@ UnlockDocumentTestCases.class
 })
 
 public class FunctionalTestSuite {
-	
+
 	public static CouchbaseMock couchbaseMock;
 	public static com.couchbase.client.java.Bucket bucket;
-	
+
 	protected static final BucketConfiguration bucketConfiguration = new BucketConfiguration();
-	
+
 	protected static Cluster cluster;
-	
+
 	protected static int carrierPort;
 	protected static int httpPort;
 	protected static CouchbaseClusterClient client;
@@ -88,7 +88,7 @@ public class FunctionalTestSuite {
 		couchbaseMock = new CouchbaseMock(0, configList);
 		couchbaseMock.start();
 		couchbaseMock.waitForStartup();
-		
+
 	}
 
 	protected static void createClient() {
@@ -100,7 +100,7 @@ public class FunctionalTestSuite {
 		bucket = cluster.openBucket("default");
 	}
 
-	
+
 	@BeforeClass
 	public static void initialiseSuite() throws Exception{
 
@@ -109,7 +109,7 @@ public class FunctionalTestSuite {
 		createClient();
 		ConnectorTestContext.initialize(CouchbaseConnector.class);
 	}
-	
+
 	@AfterClass
     public static void shutdownSuite() {
 		if (cluster != null) {
@@ -127,6 +127,6 @@ public class FunctionalTestSuite {
 		}
     	ConnectorTestContext.shutDown();
     }
-	
+
 
 }

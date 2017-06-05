@@ -11,7 +11,7 @@ import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
 public class DeleteDocumentTestCases extends CouchbaseAbstractTestCase {
 
-	@Test(expected=DocumentDoesNotExistException.class)
+	@Test
 	public void testNonExistingDocumentDeleteFailure(){
 		org.mule.api.MuleEvent muleEvent = null;
 		

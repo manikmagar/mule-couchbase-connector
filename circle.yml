@@ -1,0 +1,8 @@
+
+dependencies:
+  pre:
+    - mvn install:install-file -DgroupId=org.couchbase.mock -DartifactId=CouchbaseMock -Dversion=1.4.7 -Dpackaging=jar -Dfile=./testlib/CouchbaseMock-1.4.7.jar -DgeneratePom=true
+
+test:
+  override:
+    - mvn test -test:FunctionalTestSuite
