@@ -2,7 +2,7 @@
 
 This connector allows Mule ESB to connect to [Couchbase](https://www.couchbase.com/) NoSQL database and perform CRUD operations on Couchbase database.
 
-[![CircleCI](https://circleci.com/gh/manikmagar/couchbase-connector/tree/dev.svg?style=svg)](https://circleci.com/gh/manikmagar/couchbase-connector/tree/dev)
+[![CircleCI](https://circleci.com/gh/manikmagar/mule-couchbase-connector/tree/dev.svg?style=svg)](https://circleci.com/gh/manikmagar/mule-couchbase-connector/tree/dev)
 
 # Mule supported versions
 Mule 3.5+
