@@ -1,3 +1,7 @@
+/**
+ * The software in this package is published under the terms of the Apache v2.0 license,
+ * a copy of which has been included with this distribution in the LICENSE.md file.
+ */
 package org.mule.modules.couchbase.automation.runner;
 
 import java.util.ArrayList;
@@ -11,9 +15,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.couchbase.mock.BucketConfiguration;
-import org.couchbase.mock.CouchbaseMock;
-import org.couchbase.mock.JsonUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -31,6 +32,10 @@ import org.mule.modules.couchbase.config.CouchbaseConnectorConfig;
 import org.mule.tools.devkit.ctf.mockup.ConnectorTestContext;
 
 import com.couchbase.client.java.Cluster;
+import com.couchbase.mock.Bucket.BucketType;
+import com.couchbase.mock.BucketConfiguration;
+import com.couchbase.mock.CouchbaseMock;
+import com.couchbase.mock.JsonUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -81,7 +86,7 @@ public class FunctionalTestSuite {
 		bucketConfiguration.numReplicas = 1;
 		bucketConfiguration.numVBuckets = 1024;
 		bucketConfiguration.name = name;
-		bucketConfiguration.type = org.couchbase.mock.Bucket.BucketType.COUCHBASE;
+		bucketConfiguration.type = BucketType.COUCHBASE;
 		bucketConfiguration.password = password;
 		ArrayList<BucketConfiguration> configList = new ArrayList<BucketConfiguration>();
 		configList.add(bucketConfiguration);
