@@ -1,9 +1,7 @@
 
 dependencies:
-  pre:
-    - mvn install:install-file -DgroupId=org.couchbase.mock -DartifactId=CouchbaseMock -Dversion=1.4.7 -Dpackaging=jar -Dfile=./testlib/CouchbaseMock-1.4.7.jar -DgeneratePom=true
   override:
-    - mvn -DskipTests clean install dependency:resolve-plugins dependency:go-offline    
+    - mvn -DskipTests clean install dependency:resolve-plugins dependency:go-offline
 
 test:
   override:
