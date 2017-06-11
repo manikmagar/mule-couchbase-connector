@@ -22,6 +22,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.mule.modules.couchbase.CouchbaseConnector;
 import org.mule.modules.couchbase.automation.functional.DeleteDocumentTestCases;
+import org.mule.modules.couchbase.automation.functional.ExecuteQueryTestCase;
 import org.mule.modules.couchbase.automation.functional.GetDocumentTestCases;
 import org.mule.modules.couchbase.automation.functional.InsertDocumentTestCases;
 import org.mule.modules.couchbase.automation.functional.UnlockDocumentTestCases;
@@ -47,7 +48,8 @@ UpdateDocumentTestCases.class,
 InsertDocumentTestCases.class,
 UpsertDocumentTestCases.class,
 DeleteDocumentTestCases.class,
-UnlockDocumentTestCases.class
+UnlockDocumentTestCases.class,
+ExecuteQueryTestCase.class
 })
 
 public class FunctionalTestSuite {

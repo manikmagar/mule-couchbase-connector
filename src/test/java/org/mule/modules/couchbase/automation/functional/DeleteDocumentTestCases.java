@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.mule.modules.couchbase.automation.runner.CouchbaseAbstractTestCase;
 import org.mule.modules.couchbase.model.JavaMapDocument;
 
-import com.couchbase.client.java.error.DocumentDoesNotExistException;
 
 public class DeleteDocumentTestCases extends CouchbaseAbstractTestCase {
 

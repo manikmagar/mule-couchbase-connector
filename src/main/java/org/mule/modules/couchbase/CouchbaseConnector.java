@@ -4,6 +4,10 @@
  */
 package org.mule.modules.couchbase;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -17,14 +21,21 @@ import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.display.Placement;
 import org.mule.api.annotations.display.Summary;
 import org.mule.api.annotations.param.Default;
+import org.mule.extension.annotations.param.Optional;
 import org.mule.modules.couchbase.config.CouchbaseConnectorConfig;
 import org.mule.modules.couchbase.model.JavaMapDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.MessagingException;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.JsonDocument;
+import com.couchbase.client.java.document.json.JsonArray;
+import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.error.DocumentDoesNotExistException;
+import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.query.N1qlQueryResult;
+import com.couchbase.client.java.query.N1qlQueryRow;
 
 @Connector(name="couchbasedb", friendlyName="Couchbase DB",
 			minMuleVersion="3.5.3",keywords="Couchbase, Database",
@@ -225,6 +236,52 @@ public class CouchbaseConnector{
    		boolean unlocked = bucket.unlock(id, cas);
 		
    		return unlocked;
+   		
+   	}
+   	
+   	/**
+   	 * Runs the N1QL query and result the result set. Optionally, either positional or named parameters can be provided.
+   	 * @param muleEvent
+   	 * @param query to be executed.
+   	 * @param positionalParams {@link List} containing positional parameters to replace place holders in query. Takes precedence over named parameters.
+   	 * @param namedParams {@link Map} containing named parameters to be replaced in query.
+   	 * @return {@link List} containing the documents in map.
+   	 */
+   	@Processor(friendlyName="Execute Query")
+   	public List<Map<String, Object>> executeQuery(MuleEvent muleEvent, String query, @Optional @FriendlyName("Positional Parameters") 
+   				@Summary("For positional parameters, specify list of param values. For named parameters, specify Map of key-value pairs.") Object params){
+   		
+   		Bucket bucket = openBucket();
+   		
+   		bucket.bucketManager().createN1qlPrimaryIndex(true, false);
+   		
+   		N1qlQueryResult result;
+   		
+   		if(params != null && params instanceof List){
+   			result = bucket.query(N1qlQuery.parameterized(query, JsonArray.from(params)));
+   		} else if (params != null && params instanceof Map) {
+   			result = bucket.query(N1qlQuery.parameterized(query, JsonObject.from((Map)params)));
+   		} else {
+   			result = bucket.query(N1qlQuery.simple(query));
+   		}
+   		
+   		if(!result.parseSuccess()){
+   			LOG.error("Failed to parse the query with errors: " + result.errors());
+   			throw new MessagingException("Failed to parse the N1QL Query: "+ query);
+   		}
+   		
+   		if(!result.finalSuccess()){
+   			LOG.error("Failed to execute the query with errors: "+ result.errors());
+   			throw new MessagingException("Failed to execute the N1QL Query: "+ query);
+   		}
+   		
+   		List<Map<String, Object>> resultSet = new ArrayList<Map<String,Object>>();
+   		
+   		for (N1qlQueryRow row : result.allRows()){
+   			resultSet.add(row.value().toMap());
+   		}
+   		
+   		return resultSet;
    		
    	}
 

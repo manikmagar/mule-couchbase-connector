@@ -14,6 +14,8 @@ Mule 3.5+
 ## Couchbase Services supported
 * Couchbase Key-Value Service
 
+## Couchbase Libraries
+* Couchbase Java Client - 2.4.5
 
 # Installation
 For beta connectors you can download the source code and build it with devkit to find it available on your local repository. Then you can add it to Studio

@@ -21,6 +21,25 @@
 		<devkit.studio.package.skip>false</devkit.studio.package.skip>
 	</properties>
 	
+	<developers>
+        <developer>
+            <name>Manik Magar</name>
+            <email>manik.magar@gmail.com</email>
+            <organization>Home</organization>
+            <organizationUrl>https://manik.magar.me</organizationUrl>
+        </developer>
+    </developers>
+    
+	<scm>
+		<url>https://github.com/manikmagar/mule-couchbase-connector</url>
+		<connection>scm:git:git@github.com:manikmagar/mule-couchbase-connector.git</connection>
+		<developerConnection>scm:git:git@github.com:manikmagar/mule-couchbase-connector.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<issueManagement>
+		<url>https://github.com/manikmagar/mule-couchbase-connector</url>
+	</issueManagement>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.couchbase.client</groupId>
