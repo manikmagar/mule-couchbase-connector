@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.javastreets</groupId>
 	<artifactId>mule-couchbase-connector</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<packaging>mule-module</packaging>
 	<name>Mule Couchbase Anypoint Connector</name>
 
@@ -33,7 +33,7 @@
 		<url>https://github.com/manikmagar/mule-couchbase-connector</url>
 		<connection>scm:git:git@github.com:manikmagar/mule-couchbase-connector.git</connection>
 		<developerConnection>scm:git:git@github.com:manikmagar/mule-couchbase-connector.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>mule-couchbase-connector-0.0.2</tag>
 	</scm>
 	<issueManagement>
 		<url>https://github.com/manikmagar/mule-couchbase-connector</url>
