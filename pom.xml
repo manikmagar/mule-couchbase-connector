@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.mule.modules</groupId>
-	<artifactId>couchbase-connector</artifactId>
+	<groupId>com.javastreets</groupId>
+	<artifactId>mule-couchbase-connector</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>mule-module</packaging>
 	<name>Mule Couchbase Anypoint Connector</name>
@@ -20,16 +20,16 @@
 		<licensePath>LICENSE.md</licensePath>
 		<devkit.studio.package.skip>false</devkit.studio.package.skip>
 	</properties>
-	
+
 	<developers>
-        <developer>
-            <name>Manik Magar</name>
-            <email>manik.magar@gmail.com</email>
-            <organization>Home</organization>
-            <organizationUrl>https://manik.magar.me</organizationUrl>
-        </developer>
-    </developers>
-    
+		<developer>
+			<name>Manik Magar</name>
+			<email>manik.magar@gmail.com</email>
+			<organization>Home</organization>
+			<organizationUrl>https://javastreets.com</organizationUrl>
+		</developer>
+	</developers>
+
 	<scm>
 		<url>https://github.com/manikmagar/mule-couchbase-connector</url>
 		<connection>scm:git:git@github.com:manikmagar/mule-couchbase-connector.git</connection>
@@ -39,7 +39,48 @@
 	<issueManagement>
 		<url>https://github.com/manikmagar/mule-couchbase-connector</url>
 	</issueManagement>
-	
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.couchbase.client</groupId>
@@ -82,4 +123,6 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
+
+
 </project>
